@@ -636,6 +636,31 @@ html, body {
 /* --- Mobile controls --- */
 .mobile-controls-wrapper {
     .mobile-controls-wrapper {
+.mobile-controls-wrapper{
+    bottom: 40px;   /* Move controls upward */
+    padding: 0 20px;
+}
+
+.joystick-container{
+    width: 160px;
+    height: 160px;
+}
+
+.joystick-ring{
+    width: 140px;
+    height: 140px;
+}
+
+.joystick-knob{
+    width: 70px;
+    height: 70px;
+}
+
+.btn-control{
+    width: 90px;
+    height: 90px;
+    font-size: 18px;
+}
     position: fixed;
     left: 0;
     right: 0;
