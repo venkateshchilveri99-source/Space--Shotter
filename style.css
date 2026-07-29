@@ -761,9 +761,9 @@ body.is-touch.game-idle .mobile-controls-wrapper { display: none; }
 
     .glass-panel {
         max-width: 100%;
-    }
+    
 }
-
+}
 @media (min-width: 769px) {
     /* Styling for Desktop Layout */
     #game-wrapper {
