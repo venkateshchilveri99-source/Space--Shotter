@@ -630,23 +630,53 @@ html, body {
 }
 
 /* --- Mobile controls --- */
-/* --- Mobile controls (always visible on touch devices) --- */
-.mobile-controls-wrapper {
-    position: fixed;               /* pin to viewport, not the game-wrapper */
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 9999;                 /* above canvas, HUD, everything */
-    display: flex;                 /* show by default */
-    justify-content: space-between;
-    align-items: flex-end;
-    pointer-events: none;
-    padding: 0 18px calc(18px + env(safe-area-inset-bottom, 0px)) 18px;
+#mobile-controls {
+  display: none;
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 0;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 20px;
+  z-index: 99999;
+  pointer-events: none; /* wrapper ignores touch; children accept */
 }
 
-/* Hide on desktop / non-touch */
-@media (hover: hover) and (pointer: fine) {
-    .mobile-controls-wrapper { display: none; }
+body.is-touch #mobile-controls,
+@media (max-width: 900px), (pointer: coarse) {
+  #mobile-controls { display: flex !important; }
+}
+
+#joystick-zone,
+#btn-shoot,
+#btn-autofire {
+  pointer-events: auto;
+}
+
+#joystick-zone {
+  width: clamp(120px, 30vw, 180px);
+  height: clamp(120px, 30vw, 180px);
+  border-radius: 50%;
+  background: rgba(0, 240, 255, 0.08);
+  border: 2px solid rgba(0, 240, 255, 0.4);
+  position: relative;
+}
+
+#btn-shoot {
+  width: clamp(90px, 22vw, 130px);
+  height: clamp(90px, 22vw, 130px);
+  border-radius: 50%;
+  background: rgba(255, 0, 85, 0.25);
+  border: 2px solid rgba(255, 0, 85, 0.7);
+  color: #fff;
+  font-family: var(--font-cyber);
+  font-size: 18px;
+}
+
+/* Give the canvas room so controls don't overlap the ship */
+@media (max-width: 900px), (pointer: coarse) {
+  #game-wrapper { padding-bottom: 180px; }
 }
 
 /* Hide while a menu / pause / game-over screen is open */
