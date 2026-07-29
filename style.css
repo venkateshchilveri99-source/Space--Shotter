@@ -652,8 +652,8 @@ body.is-touch.game-idle .mobile-controls-wrapper { display: none; }
 .mobile-controls-wrapper.hidden { display: none !important; }
 
 .joystick-container {
-    width: 200px;
-    height: 500x;
+    width: 400px;
+    height: 750x;
     pointer-events: auto;
     touch-action: none;
     -webkit-user-select: none;
@@ -662,8 +662,8 @@ body.is-touch.game-idle .mobile-controls-wrapper { display: none; }
 }
 
 .joystick-ring {
-    width: 200%;
-    height: 500%;
+    width: 400%;
+    height: 1000%;
     border-radius: 50%;
     border: 2px solid rgba(0, 240, 255, 0.35);
     background: rgba(10, 10, 20, 0.45);
@@ -676,8 +676,8 @@ body.is-touch.game-idle .mobile-controls-wrapper { display: none; }
 }
 
 .joystick-knob {
-    width: 200px;
-    height: 500px;
+    width: 400px;
+    height: 1000px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--neon-blue), var(--neon-purple));
     box-shadow: 0 0 12px var(--neon-blue-glow);
