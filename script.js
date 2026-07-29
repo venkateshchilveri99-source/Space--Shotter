@@ -50,6 +50,18 @@ const bossWarning = document.getElementById('boss-warning');
 const bossHealthContainer = document.getElementById('boss-health-container');
 const bossHealthInner = document.getElementById('boss-hp-inner');
 const hud = document.getElementById('hud');
+// Detect touch device and reveal mobile controls
+state.isMobile = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.innerWidth < 900;
+
+if (state.isMobile) {
+  document.body.classList.add('is-touch');
+  if (mobileControls) {
+    mobileControls.style.display = 'flex';
+    mobileControls.style.visibility = 'visible';
+    mobileControls.style.opacity = '1';
+  }
+}
+
 
 // HUD stats
 const scoreVal = document.getElementById('score-val');
