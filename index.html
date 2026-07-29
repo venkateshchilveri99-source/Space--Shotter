@@ -1,0 +1,155 @@
+
+
+
+
+
+
+
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>NEO-VECTORS: Space Shooter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="scanlines"></div>
+    <div class="grid-overlay"></div>
+
+    <div id="game-wrapper">
+        <canvas id="game-canvas"></canvas>
+
+        <div id="hud" class="hud-container hidden">
+            <div class="hud-top">
+                <div class="hud-group"><span class="hud-label">SCORE</span><span id="score-val" class="hud-value neon-blue">000000</span></div>
+                <div class="hud-group"><span class="hud-label">WAVE</span><span id="level-val" class="hud-value neon-purple">1</span></div>
+                <div class="hud-group"><span class="hud-label">HIGH</span><span id="highscore-val" class="hud-value neon-gold">000000</span></div>
+            </div>
+            <div class="hud-bottom">
+                <div class="hud-hp-container"><span class="hud-label">HP</span><div class="hp-bar-outer"><div id="hp-bar-inner" class="hp-bar-inner"></div></div></div>
+                <div class="hud-lives-container"><span class="hud-label">LIVES</span><div id="lives-icons" class="lives-icons-wrapper"></div></div>
+            </div>
+            <div id="active-powerups" class="powerup-timers"></div>
+        </div>
+
+        <div id="start-screen" class="screen-overlay active">
+            <div class="glass-panel text-center">
+                <h1 class="game-title">NEO<span class="glitch-text">VECTORS</span></h1>
+                <p class="subtitle">A COSMIC RETRO-WAVE SHOOTER</p>
+                <div class="score-display"><span class="label">PERSONAL BEST</span><h3 id="menu-highscore" class="neon-gold">000000</h3></div>
+                <button id="btn-start" class="btn btn-primary neon-glow-btn">INITIALIZE CORE</button>
+            </div>
+        </div>
+
+        <div id="pause-screen" class="screen-overlay hidden">
+            <div class="glass-panel text-center">
+                <h2 class="neon-blue">SYSTEMS PAUSED</h2>
+                <div class="menu-actions">
+                    <button id="btn-resume" class="btn btn-secondary">RESUME</button>
+                    <button id="btn-restart-pause" class="btn btn-danger">RESTART</button>
+                    <div class="sound-toggles">
+                        <button id="btn-toggle-sound" class="btn btn-sound sound-on">SFX: ON</button>
+                        <button id="btn-toggle-music" class="btn btn-sound sound-on">MUSIC: ON</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="gameover-screen" class="screen-overlay hidden">
+            <div class="glass-panel text-center">
+                <h2 id="gameover-title" class="neon-red">VESSEL DESTROYED</h2>
+                <div class="score-stats">
+                    <div class="stat-row"><span>FINAL SCORE:</span><span id="final-score" class="stat-val neon-blue">0</span></div>
+                    <div id="new-highscore-badge" class="highscore-badge hidden">NEW HIGH RECORD!</div>
+                    <div class="stat-row"><span>WAVES:</span><span id="final-waves" class="stat-val neon-purple">0</span></div>
+                </div>
+                <button id="btn-restart" class="btn btn-primary neon-glow-btn">REDEPLOY</button>
+            </div>
+        </div>
+
+        <div id="boss-warning" class="boss-warning-overlay hidden">
+            <div class="warning-banner"><h2 class="warning-title">⚠️ WARNING ⚠️</h2><p class="warning-desc">FLAGSHIP INCOMING</p></div>
+        </div>
+
+        <div id="boss-health-container" class="boss-hp-wrapper hidden">
+            <div class="boss-title">COLOSSAL SENTINEL</div>
+            <div class="boss-hp-outer"><div id="boss-hp-inner" class="boss-hp-inner"></div></div>
+        </div>
+
+        <!-- Mobile Controls (always visible on touch/small screens) -->
+        <div id="mobile-controls" class="mobile-controls-wrapper">
+            <div id="joystick-zone" class="joystick-container">
+                <div class="joystick-ring"><div id="joystick-knob" class="joystick-knob"></div></div>
+            </div>
+            <div class="action-buttons-container">
+                <button id="btn-autofire" class="btn-control autofire-btn"><span class="btn-label">AUTO</span><span class="btn-status neon-green">ON</span></button>
+                <button id="btn-shoot" class="btn-control shoot-btn"><span class="btn-label">LASER</span></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js">
+
+(function enableTouchShoot() {
+  const canvas = document.getElementById('game-canvas');
+  if (!canvas) return;
+
+  // Prevent page scroll / zoom while playing
+  const stop = e => { e.preventDefault(); };
+  canvas.style.touchAction = 'none';
+
+  function fireShot() {
+    // Try common shoot function names the game might expose
+    if (typeof shoot === 'function') return shoot();
+    if (window.player && typeof window.player.shoot === 'function') return window.player.shoot();
+    if (typeof fire === 'function') return fire();
+
+    // Fallback: simulate Spacebar keypress (most JS games listen for Space)
+    ['keydown', 'keyup'].forEach(type => {
+      window.dispatchEvent(new KeyboardEvent(type, {
+        key: ' ', code: 'Space', keyCode: 32, which: 32, bubbles: true
+      }));
+    });
+  }
+
+  function movePlayerTo(touch) {
+    const rect = canvas.getBoundingClientRect();
+    const x = (touch.clientX - rect.left) * (canvas.width / rect.width);
+    const y = (touch.clientY - rect.top) * (canvas.height / rect.height);
+    if (window.player) {
+      if ('x' in window.player) window.player.x = x;
+      if ('y' in window.player) window.player.y = y;
+    }
+  }
+
+  let holdTimer = null;
+
+  canvas.addEventListener('touchstart', e => {
+    stop(e);
+    const t = e.touches[0];
+    movePlayerTo(t);
+    fireShot();
+    // Auto-fire while finger is held down
+    clearInterval(holdTimer);
+    holdTimer = setInterval(fireShot, 180);
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', e => {
+    stop(e);
+    movePlayerTo(e.touches[0]);
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', e => {
+    stop(e);
+    clearInterval(holdTimer);
+    holdTimer = null;
+  }, { passive: false });
+})();
+</script>
+</body>
+</html>
